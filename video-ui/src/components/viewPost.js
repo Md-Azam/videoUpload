@@ -47,15 +47,15 @@ const ViewPost = () => {
                                     </div>
                                     <Card.Title>{post.title}</Card.Title>
                                     <Card.Subtitle><Card.Text><strong style={{ color: "blue" }}>{post.tags}</strong></Card.Text></Card.Subtitle>
-                                    <div >
+                                    <div style={{padding:"12px"}} >
                                         <p {...getCollapseProps()}>{post.description}</p>
-                                        <Button size="xs" variant="white"
+                                        <Link size="xs" variant="white"
                                             {...getToggleProps({
                                                 onClick: () => setExpanded((prevExpanded) => !prevExpanded),
                                             })}
                                         >
                                             {isExpanded ? 'Read less' : 'Read more'}
-                                        </Button>
+                                        </Link>
 
                                     </div>
 
