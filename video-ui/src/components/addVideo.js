@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { Container, Card, CardBody, Input, Form, Label, Button, } from 'reactstrap';
-import { SaveVideoInfo, UplaodVideo } from '../urls/videoService'
+import { SaveVideoInfo, UplaodVideo } from '../urls/videoService';
+import {ProgressBar} from 'react-bootstrap';
+
+import 'react-circular-progressbar/dist/styles.css';
+import { CircularProgressbar,buildStyles } from 'react-circular-progressbar';
+
 
 const AddVideo = () => {
     const [video, setVideo] = useState({
@@ -9,14 +14,24 @@ const AddVideo = () => {
         tags: "",
         description: "",
     });
+    const [progress,setProgress] = useState(0)
     const [videos, setVideos] = useState(null);
+    const [loading,setLoading] =useState(true);
+    const [singleProgress, setSingleProgress] = useState(0);
+    const singleFileOptions = {
+        onUploadProgress: (progressEvent) => {
+            const {loaded, total} = progressEvent;
+            const percentage = Math.floor(((loaded / 1000) * 100) / (total / 1000));
+            setSingleProgress(percentage);
+        }
+    }
+
 
 
     //fields change handle function .
     const fieldChangeHandle = (event) => {
         setVideo({ ...video, [event.target.name]: event.target.value });
     };
-
     //handling file change event  .
     const handleFileChange = (event) => {
         console.log(event.target.files[0]);
@@ -37,13 +52,13 @@ const AddVideo = () => {
         //submit call starts here .
         SaveVideoInfo(video).then((data) => {
             console.log(data);
-            UplaodVideo(videos, data.id).then((data) => {
+            UplaodVideo(videos, data.id,singleFileOptions).then((data) => {
+                setLoading(true)
                 alert(" wait video is Uploading");
                 console.log(data);
                 setVideos(event.target.files[0])
             }).catch((error) => {
                 console.log(error);
-                alert("Error in Uploading !!!")
             });
             toast.success("Video Uploaded with Information!!")
             console.log(video);
@@ -96,6 +111,27 @@ const AddVideo = () => {
                                 <Input id="videoName" type="file"
                                     onChange={handleFileChange} />
                             </div>
+                            <div  style={{ width: 150, height: 150 }}>
+                        <CircularProgressbar
+                        
+                        strokeWidth={10}
+                            value={singleProgress}
+                            text={`${singleProgress}%`}
+                            styles={buildStyles({
+                                rotation: 0.25,
+                                strokeLinecap: 'butt',
+                                textSize: '6px',
+                                size:"4px",
+                                pathTransitionDuration: 0.5,
+                                pathColor: `rgba(255, 136, 136, ${singleProgress / 100})`,
+                                textColor: '#f88',
+                                trailColor: '#d6d6d6',
+                                backgroundColor: '#3e98c7',
+                                height:"100px"
+                            })}
+                        />
+                    </div>
+                
                             <Container className='text-center p-2'>
                                 <Button className="rounded-2 mb-2 " color="primary">Upload Video</Button>
                             </Container>

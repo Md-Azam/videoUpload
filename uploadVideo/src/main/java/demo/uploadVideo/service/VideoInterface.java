@@ -2,6 +2,7 @@ package demo.uploadVideo.service;
 
 import java.util.List;
 
+import demo.uploadVideo.configuration.UpdateModel;
 import demo.uploadVideo.entity.Videos;
 
 public interface VideoInterface {
@@ -16,5 +17,5 @@ public interface VideoInterface {
 	
 	public void deleteVideos(Integer id);
 	
-
+public UpdateModel updateModel(UpdateModel updateModel, int id);
 }

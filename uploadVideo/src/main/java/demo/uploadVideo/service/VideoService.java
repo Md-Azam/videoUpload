@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import demo.uploadVideo.configuration.UpdateModel;
 import demo.uploadVideo.entity.Videos;
 import demo.uploadVideo.exception.ResourceNotFound;
 import demo.uploadVideo.repository.VideoRepository;
@@ -68,6 +69,18 @@ public class VideoService implements VideoInterface   {
 	Videos video = this.videoRepository.findById(id).orElseThrow(()-> new ResourceNotFound("403","video id not found"));
 	this.videoRepository.delete(video);
 		
+	}
+
+	@Override
+	public UpdateModel updateModel(UpdateModel updateModel, int id) {
+Videos video = this.videoRepository.findById(id).orElseThrow(()-> new ResourceNotFound("501","Id not found"));
+		updateModel.setId(id);
+		video.setTitle(updateModel.getTitle());
+		video.setDescription(updateModel.getDescription());
+		video.setTags(updateModel.getTags());
+		video.setAddedDate(new Date());
+	this.videoRepository.save(video);
+		return updateModel ;
 	}
 
 	

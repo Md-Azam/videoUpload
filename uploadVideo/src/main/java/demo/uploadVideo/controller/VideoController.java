@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
@@ -20,12 +21,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import demo.uploadVideo.configuration.FileModel;
+import demo.uploadVideo.configuration.UpdateModel;
 import demo.uploadVideo.entity.Videos;
 import demo.uploadVideo.exception.ControllerException;
 import demo.uploadVideo.exception.ResourceNotFound;
@@ -126,10 +129,22 @@ public class VideoController {
 			Files.deleteIfExists(exactPath);
 
 		} catch (Exception e1) {
-			throw new ResourceNotFound("409", "file does not exists" + e1.getMessage());
+			e1.getMessage();
+			System.out.println(e1.getMessage()+"can not delete now ");
 		}
 		this.service.deleteVideos(id);
 
 		return "video deleted successfully";
+	}
+	
+	//Update DataModel of Video .
+	@PutMapping("/update/{id}")
+	public ResponseEntity<UpdateModel> setVideoData( @RequestBody UpdateModel updateModel,@PathVariable int id){
+		try {
+		service.updateModel(updateModel, id);
+		return new ResponseEntity<UpdateModel>(updateModel, HttpStatus.OK);	
+		}catch(Exception e) {
+			throw new ResourceNotFound("404","user id not found");
+		}
 	}
 }
